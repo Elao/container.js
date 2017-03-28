@@ -23,11 +23,11 @@ class Container {
    * @param {String} name
    * @param {Scalar|Function} value
    * @param {Array} dependencies
-   * @param {String} tag
+   * @param {String|String[]} tags
    */
-  register(name, value, dependencies = [], tag = null) {
+  register(name, value, dependencies = [], tags = []) {
     if (Container.isConstructor(value)) {
-      this.registerDefinition(name, value, dependencies, tag);
+      this.registerDefinition(name, value, dependencies, tags);
     } else {
       this.registerParameter(name, value);
     }
@@ -39,11 +39,12 @@ class Container {
    * @param {String} name
    * @param {Function} classname
    * @param {Array} dependencies
-   * @param {String} tag
+   * @param {String|String[]} tags
    */
-  registerDefinition(name, classname, dependencies = [], tag = null) {
+  registerDefinition(name, classname, dependencies = [], tags = []) {
+    tags = typeof (tags) === 'string' ? [tags] : tags;
     this.ensureUniqueness(name);
-    this.services.set(name, { classname, name, dependencies, tag });
+    this.services.set(name, { classname, name, dependencies, tags });
   }
 
   /**
@@ -98,16 +99,16 @@ class Container {
   }
 
   /**
-   * Get tagged service
+   * Get services for a given tag.
    *
    * @param {String} tag
    *
    * @return {Array}
    */
-  getTaggedService(tag) {
+  getTaggedServices(tag) {
     return Array
       .from(this.services.values())
-      .filter(definition => definition.tag === tag)
+      .filter(definition => definition.tags.includes(tag))
     ;
   }
 
