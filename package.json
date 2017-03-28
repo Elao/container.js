@@ -1,0 +1,25 @@
+{
+  "name": "elao-container.js",
+  "version": "1.0.0",
+  "description": "Microscopic dependency injection container",
+  "main": "src/Container.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Elao/container.js.git"
+  },
+  "author": "Thomas Jarrand <thomas.jarrand@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Elao/container.js/issues"
+  },
+  "homepage": "https://github.com/Elao/container.js#readme",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "dependency",
+    "injection",
+    "container",
+    "service"
+  ]
+}
