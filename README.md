@@ -48,5 +48,5 @@ Require the `api` service wherever you need it:
 ```js
 import container from 'my-container.js';
 
-container.fetch('api').login();
+container.get('api').login();
 ```
