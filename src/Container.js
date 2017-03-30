@@ -14,7 +14,7 @@ class Container {
     this.parameters = new Map();
 
     this.resolve = this.resolve.bind(this);
-    this.fetch = this.fetch.bind(this);
+    this.get = this.get.bind(this);
   }
 
   /**
@@ -75,13 +75,13 @@ class Container {
   }
 
   /**
-   * Fetch parameter or service
+   * Get parameter or service identified by its name
    *
    * @param {String} name
    *
    * @return {mixed}
    */
-  fetch(name) {
+  get(name) {
     if (this.cache.has(name)) {
       return this.cache.get(name);
     }
@@ -119,7 +119,7 @@ class Container {
    * @return {mixed}
    */
   resolve(definition) {
-    const dependencies = definition.dependencies.map(this.fetch);
+    const dependencies = definition.dependencies.map(this.get);
     const Constructor = definition.classname;
     const service = new Constructor(...dependencies);
 
