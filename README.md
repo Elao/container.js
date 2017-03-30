@@ -15,7 +15,7 @@ Given the given class, you want to declare as a service:
 export default class MyApiClient {
     constructor(host, key) {
         this.host = host;
-        this.key keyhost;
+        this.key = key;
     }
 
     login() {
