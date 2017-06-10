@@ -4,7 +4,7 @@ Microscopic dependency injection container
 
 ## Installation
 
-    yarn add elao-container.js
+    npm install @elao/container.js
 
 ## Usage
 
@@ -28,7 +28,7 @@ Set up your container like that:
 
 ```js
 // my-container.js
-import Container from 'elao-container.js';
+import Container from '@elao/container.js';
 import MyApiClient from './MyApiClient';
 
 const container = new Container();
