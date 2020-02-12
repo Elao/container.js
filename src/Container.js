@@ -1,24 +1,24 @@
 import ContainerNotFoundError from './ContainerNotFoundError';
 import ContainerDuplicateError from './ContainerDuplicateError';
+import ContainerUnsupportedDefinitionTypeError from './ContainerUnsupportedDefinitionTypeError';
 
 /**
  * Microscopic dependency injection container
  */
-class Container {
+export default class Container {
   /**
    * Contructor
    */
   constructor() {
-    this.cache = new Map();
-    this.services = new Map();
-    this.parameters = new Map();
+    this.instances = new Map();
+    this.definitions = new Map();
 
-    this.resolve = this.resolve.bind(this);
     this.get = this.get.bind(this);
+    this.registerDefinition = this.registerService.bind(this);
   }
 
   /**
-   * Register parameter or service
+   * Register parameter, callback or service
    *
    * @param {String} name
    * @param {Scalar|Function} value
@@ -27,24 +27,48 @@ class Container {
    */
   register(name, value, dependencies = [], tags = []) {
     if (Container.isConstructor(value)) {
-      this.registerDefinition(name, value, dependencies, tags);
-    } else {
-      this.registerParameter(name, value);
+      return this.registerService(name, value, dependencies, tags);
     }
+
+    return this.registerParameter(name, value);
   }
 
   /**
-   * Register service definition
+   * Register service
    *
    * @param {String} name
    * @param {Function} classname
    * @param {Array} dependencies
    * @param {String|String[]} tags
    */
-  registerDefinition(name, classname, dependencies = [], tags = []) {
-    tags = typeof (tags) === 'string' ? [tags] : tags;
+  registerService(name, classname, dependencies = [], tags = []) {
     this.ensureUniqueness(name);
-    this.services.set(name, { classname, name, dependencies, tags });
+    this.definitions.set(name, {
+      type: 'service',
+      classname,
+      name,
+      dependencies,
+      tags: typeof tags === 'string' ? [tags] : tags
+    });
+  }
+
+  /**
+   * Register service callback
+   *
+   * @param {String} name
+   * @param {Function} callback
+   * @param {Array} dependencies
+   * @param {String|String[]} tags
+   */
+  registerCallback(name, callback, dependencies = [], tags = []) {
+    this.ensureUniqueness(name);
+    this.definitions.set(name, {
+      type: 'callback',
+      callback,
+      name,
+      dependencies,
+      tags: typeof tags === 'string' ? [tags] : tags
+    });
   }
 
   /**
@@ -55,7 +79,7 @@ class Container {
    */
   registerParameter(name, value) {
     this.ensureUniqueness(name);
-    this.parameters.set(name, value);
+    this.definitions.set(name, { type: 'parameter', value });
   }
 
   /**
@@ -66,12 +90,8 @@ class Container {
    * @throw {ContainerDuplicateError}
    */
   ensureUniqueness(name) {
-    if (this.parameters.has(name)) {
-      throw new ContainerDuplicateError(name, 'parameter');
-    }
-
-    if (this.services.has(name)) {
-      throw new ContainerDuplicateError(name, 'service');
+    if (this.definitions.has(name)) {
+      throw new ContainerDuplicateError(name, this.definitions.get(name).type);
     }
   }
 
@@ -83,16 +103,28 @@ class Container {
    * @return {mixed}
    */
   get(name) {
-    if (this.cache.has(name)) {
-      return this.cache.get(name);
+    const instance = this.instances.get(name);
+
+    if (instance !== undefined) {
+      return instance;
     }
 
-    if (this.services.has(name)) {
-      return this.resolve(this.services.get(name));
-    }
+    if (this.definitions.has(name)) {
+      const definition = this.definitions.get(name);
 
-    if (this.parameters.has(name)) {
-      return this.parameters.get(name);
+      switch (definition.type) {
+        case 'parameter':
+          return definition.value;
+
+        case 'callback':
+          return this.resolveCallback(definition);
+
+        case 'service':
+          return this.resolveService(definition);
+
+        default:
+          throw new ContainerUnsupportedDefinitionTypeError(definition.type)
+      }
     }
 
     throw new ContainerNotFoundError(name);
@@ -107,24 +139,41 @@ class Container {
    */
   getTaggedServices(tag) {
     return Array
-      .from(this.services.values())
-      .filter(definition => definition.tags.includes(tag))
+      .from(this.definitions.values())
+      .filter(definition => definition.type !== 'parameter' && definition.tags.includes(tag))
+      .map(definition => definition.name)
     ;
   }
 
   /**
-   * Resolve definition
+   * Resolve service definition
    *
    * @param {Object} definition
    *
    * @return {mixed}
    */
-  resolve(definition) {
+  resolveService(definition) {
     const dependencies = definition.dependencies.map(this.get);
     const Constructor = definition.classname;
     const service = new Constructor(...dependencies);
 
-    this.cache.set(definition.name, service);
+    this.instances.set(definition.name, service);
+
+    return service;
+  }
+
+  /**
+   * Resolve callback definition
+   *
+   * @param {Object} definition
+   *
+   * @return {mixed}
+   */
+  resolveCallback(definition) {
+    const dependencies = definition.dependencies.map(this.get);
+    const service = definition.callback(...dependencies);
+
+    this.instances.set(definition.name, service);
 
     return service;
   }
@@ -137,8 +186,6 @@ class Container {
    * @return {Boolean}
    */
   static isConstructor(classname) {
-    return typeof (classname) === 'function' && classname.name !== '';
+    return typeof classname === 'function';
   }
 }
-
-export default Container;

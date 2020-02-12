@@ -1,13 +1,40 @@
-import Container from '../src/Container';
+const { Container } = require('../dist/container.js');
 
 describe('Container', () => {
     const container = new Container();
-    class MyClass { }
-    class BarClass { }
-    container.registerDefinition('my:class', MyClass, [], ['foo_tag']);
-    container.registerDefinition('bar', BarClass, [], ['foo_tag', 'bar_tag']);
+    const instances = {
+        MyClass: 0,
+        BarClass: 0,
+        myCallback: 0,
+    };
+    const myCallback = function foo(bar) { instances.myCallback++; return { bar }; };
+    class MyClass { constructor() { instances.MyClass++; } }
+    class BarClass { constructor() { instances.BarClass++; } }
+
+    container.registerParameter('my:parameter', 'foo');
+    container.registerService('my:class', MyClass, [], ['foo_tag']);
+    container.registerService('bar', BarClass, ['my:class'], ['foo_tag', 'bar_tag']);
+    container.registerCallback('my:callback', myCallback, ['my:parameter']);
 
     describe('Container.get()', () => {
+        test('Class should only be instancieted once', () => {
+            expect(instances.MyClass).toEqual(0);
+            container.get('my:class');
+            container.get('my:class')
+            expect(instances.MyClass).toEqual(1);
+        });
+
+        test('Callbacks should only be called once', () => {
+            expect(instances.myCallback).toEqual(0);
+            container.get('my:callback');
+            container.get('my:callback')
+            expect(instances.myCallback).toEqual(1);
+        });
+
+        test('should return the expected parameter when asked for', () => {
+            expect(container.get('my:parameter')).toEqual('foo');
+        });
+
         test('should return the expected service when asked for', () => {
             expect(container.get('my:class')).toBeInstanceOf(MyClass);
         });
@@ -21,17 +48,22 @@ describe('Container', () => {
 
     describe('Container.getTaggedServices()', () => {
         test('should return all services with a given tag', () => {
-            expect(container.getTaggedServices('foo_tag')).toEqual([
-                { classname: MyClass, dependencies: [], name: 'my:class', tags: ['foo_tag'] },
-                { classname: BarClass, dependencies: [], name: 'bar', tags: ['foo_tag', 'bar_tag'] }
-            ]);
-            expect(container.getTaggedServices('bar_tag')).toEqual([
-                { classname: BarClass, dependencies: [], name: 'bar', tags: ['foo_tag', 'bar_tag'] }
-            ]);
+            expect(container.getTaggedServices('foo_tag')).toEqual(['my:class', 'bar']);
+            expect(container.getTaggedServices('bar_tag')).toEqual(['bar']);
         });
 
         test('should return an empty array on undefined tag', () => {
             expect(container.getTaggedServices('foobar')).toEqual([]);
+        });
+    });
+
+    describe('Container.isConstructor()', () => {
+        test('Should return true for a constructor', () => {
+            class Foo { constructor(a) {} }
+            expect(Container.isConstructor(Foo)).toEqual(true);
+        });
+        test('Should return false for a string', () => {
+            expect(Container.isConstructor('foo')).toEqual(false);
         });
     });
 });
