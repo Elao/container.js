@@ -1,15 +1,12 @@
 /**
  * Service or parameter already declared for this key error for Container
  */
-class ContainerDuplicateError extends Error {
+export default class ContainerDuplicateError extends Error {
   /**
-   * Constructor
-   *
-   * @param {String} name Service name
+   * @param  {String} key  Definition name
+   * @param  {String} type Existing definition type
    */
   constructor(key, type) {
     super(`A ${type} has already been declared for the key "${key}".`);
   }
 }
-
-export default ContainerDuplicateError;

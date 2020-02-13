@@ -1,6 +1,6 @@
 {
   "name": "@elao/container.js",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "description": "Microscopic dependency injection container",
   "keywords": [
     "dependency",
@@ -15,7 +15,7 @@
   },
   "author": "Thomas Jarrand <thomas.jarrand@gmail.com> (http://thomas.jarrand.fr)",
   "license": "MIT",
-  "copyright": "Copyright 2017 élao",
+  "copyright": "Copyright 2020 élao",
   "bugs": {
     "url": "https://github.com/Elao/container.js/issues"
   },
@@ -23,18 +23,26 @@
   "scripts": {
     "test": "jest",
     "build": "NODE_ENV=production webpack",
-    "start": "NODE_ENV=dev webpack --watch"
+    "start": "NODE_ENV=development webpack --watch"
   },
   "devDependencies": {
-    "babel": "^6.23.0",
-    "babel-core": "^6.25.0",
-    "babel-eslint": "^7.2.3",
-    "babel-jest": "^20.0.3",
-    "babel-loader": "^7.0.0",
-    "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-polyfill": "^6.23.0",
-    "babel-preset-es2015": "^6.24.1",
-    "jest": "^20.0.4",
-    "webpack": "^2.6.1"
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
+    "babel-jest": "^25.1.0",
+    "babel-loader": "^8.0.6",
+    "jest": "^25.1.0",
+    "webpack": "^4.41.6",
+    "webpack-cli": "^3.3.11"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.8.3"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env"
+      ]
+    ]
   }
 }
