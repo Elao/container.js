@@ -1,4 +1,4 @@
-const { Container } = require('../dist/container.js');
+const { Container } = require('../container.js');
 
 describe('Container', () => {
     const container = new Container();

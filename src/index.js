@@ -4,8 +4,8 @@ import ContainerUnsupportedDefinitionTypeError from './ContainerUnsupportedDefin
 import Container from './Container';
 
 export {
-    Container,
-    ContainerNotFoundError,
-    ContainerDuplicateError,
-    ContainerUnsupportedDefinitionTypeError,
+  Container,
+  ContainerNotFoundError,
+  ContainerDuplicateError,
+  ContainerUnsupportedDefinitionTypeError,
 };
