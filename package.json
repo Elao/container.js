@@ -1,48 +1,42 @@
 {
   "name": "@elao/container.js",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Microscopic dependency injection container",
+  "author": "Thomas Jarrand <thomas.jarrand@gmail.com> (http://thomas.jarrand.fr)",
+  "license": "MIT",
+  "copyright": "Copyright 2020 élao",
+  "homepage": "https://github.com/Elao/container.js#readme",
   "keywords": [
     "dependency",
     "injection",
     "container",
     "service"
   ],
-  "main": "dist/container.js",
+  "main": "container.js",
+  "files": [
+    "src/*",
+    "container.js"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Elao/container.js.git"
   },
-  "author": "Thomas Jarrand <thomas.jarrand@gmail.com> (http://thomas.jarrand.fr)",
-  "license": "MIT",
-  "copyright": "Copyright 2020 élao",
   "bugs": {
     "url": "https://github.com/Elao/container.js/issues"
   },
-  "homepage": "https://github.com/Elao/container.js#readme",
   "scripts": {
+    "watch": "webpack --watch --mode=development",
+    "build": "webpack --mode=production",
     "test": "jest",
-    "build": "NODE_ENV=production webpack",
-    "start": "NODE_ENV=development webpack --watch"
+    "lint": "eslint src/* --ext .js,.json --fix"
   },
   "devDependencies": {
-    "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.8.4",
-    "@babel/preset-env": "^7.8.4",
-    "babel-jest": "^25.1.0",
-    "babel-loader": "^8.0.6",
-    "jest": "^25.1.0",
-    "webpack": "^4.41.6",
-    "webpack-cli": "^3.3.11"
-  },
-  "dependencies": {
-    "@babel/polyfill": "^7.8.3"
-  },
-  "babel": {
-    "presets": [
-      [
-        "@babel/preset-env"
-      ]
-    ]
+    "@babel/core": "^7.11.4",
+    "@babel/preset-env": "^7.11.0",
+    "babel-loader": "^8.1.0",
+    "eslint": "^5.16.0",
+    "jest": "^26.4.2",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
   }
 }

@@ -1,34 +1,29 @@
-const webpack = require('webpack');
 const meta = require('./package.json');
+const { BannerPlugin } = require('webpack');
 
 module.exports = {
-  mode: process.env.NODE_ENV,
-  devtool: process.env.NODE_ENV === 'production' ? undefined : 'source-map',
   entry: './src/index.js',
   output: {
-    path: __dirname + '/dist',
+    path: __dirname,
     filename: 'container.js',
     library: 'containerjs',
     libraryTarget: 'umd',
-  },
-  devServer: {
-    contentBase: './dist',
+    globalObject: 'this',
   },
   module: {
     rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel-loader',
-        options: {
-          presets: ['@babel/preset-env'],
+        use: {
+          loader: 'babel-loader',
+          options: { presets: ['@babel/preset-env'] }
         }
-      },
+      }
     ]
   },
   plugins: [
-    //new webpack.optimize.UglifyJsPlugin(),
-    new webpack.BannerPlugin([
+    new BannerPlugin([
       `${meta.name} - ${meta.version}`,
       `${meta.homepage}`,
       `${meta.copyright}`,

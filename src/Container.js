@@ -123,7 +123,7 @@ export default class Container {
           return this.resolveService(definition);
 
         default:
-          throw new ContainerUnsupportedDefinitionTypeError(definition.type)
+          throw new ContainerUnsupportedDefinitionTypeError(definition.type);
       }
     }
 
