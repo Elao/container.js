@@ -1,0 +1,31 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  tests:
+    name: Tests
+    runs-on: ubuntu-latest
+    steps:
+      ## https://github.com/actions/checkout
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # https://github.com/actions/setup-node
+      - name: Setup node
+        uses: actions/setup-node@v1
+
+      - name: Install dependencies
+        run: |
+          echo "::group::npm install"
+          npm install --color=always --no-progress
+          echo "::endgroup::"
+
+      - name: Lint
+        run: |
+          echo "::group::Lint JS"
+          make lint@integration

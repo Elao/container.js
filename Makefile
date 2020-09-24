@@ -5,7 +5,7 @@
 install:
 	npm install
 
-# Launch watch
+# Launch watcher
 watch:
 	npm run watch
 
@@ -15,12 +15,11 @@ build:
 
 # Lint and code style fix
 lint:
+	npm run fix
+
+lint@integration:
 	npm run lint
 
-# Test
+# Run tests
 test: build
 	npm run test
-
-# Publish package
-publish: build
-	npm publish . --access public

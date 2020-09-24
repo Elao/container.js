@@ -28,6 +28,7 @@
     "watch": "webpack --watch --mode=development",
     "build": "webpack --mode=production",
     "test": "jest",
+    "fix": "eslint src/* --ext .js,.json",
     "lint": "eslint src/* --ext .js,.json --fix"
   },
   "devDependencies": {
