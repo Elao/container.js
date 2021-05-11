@@ -1,0 +1,5 @@
+/*!
+ * @elao/container.js - 3.0.1
+ * https://github.com/Elao/container.js#readme
+ * Copyright 2020 élao
+ */
