@@ -1,6 +1,6 @@
 {
   "name": "@elao/container.js",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Microscopic dependency injection container",
   "author": "Thomas Jarrand <thomas.jarrand@gmail.com> (http://thomas.jarrand.fr)",
   "license": "MIT",
